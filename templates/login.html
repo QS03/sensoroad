@@ -1,8 +1,7 @@
-
 <!-- templates/login.html -->
 {% extends 'base.html' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
 <!-- CONTENT
@@ -18,56 +17,39 @@
       
       <!-- Subheading -->
       <p class="text-muted text-center mb-5">
-        
       </p>
-
+      
       <!-- Form -->
-      <form  method="post">
+      <form method="post">
         {% csrf_token %}
 
-        <!-- Username -->
+        <!-- Email address -->
         <div class="form-group">
           <!-- Label -->
-          <label>
-            Username
-          </label>
+          <label>Username</label>
           <!-- Input -->
           {{ form.username }}
         </div>
 
-        <!-- Password1 -->
+        <!-- Password -->
         <div class="form-group">
-          <!-- Label -->
-          <label>
-            Password
-          </label>
-          <!-- Input group -->
-          <div class="input-group input-group-merge">
-            <!-- Input -->
-            {{ form.password1 }}
-            <!-- Icon -->
-            <div class="input-group-append">
-              <span class="input-group-text">
-                <i class="fe fe-eye"></i>
-              </span>
+          <div class="row">
+            <div class="col">
+              <!-- Label -->
+              <label>Password</label>
             </div>
+            <div class="col-auto">
+              <!-- Help text -->
+              <a href="password-reset.html" class="form-text small text-muted">
+                Forgot password?
+              </a>
+            </div>
+          </div> <!-- / .row -->
 
-          </div>
-        </div>
-
-        <!-- Password2 -->
-        <div class="form-group">
-          <!-- Label -->
-          <label>
-            Confirm Password
-          </label>
           <!-- Input group -->
           <div class="input-group input-group-merge">
             <!-- Input -->
-            {{ form.password2 }}
-            {% if error in form.password2 %}
-            <p style="color: red">{{ error }}</p>
-            {% endif %}
+            {{ form.password }}
             <!-- Icon -->
             <div class="input-group-append">
               <span class="input-group-text">
@@ -80,20 +62,19 @@
 
         <!-- Submit -->
         <button class="btn btn-lg btn-block btn-primary mb-3">
-          Register
+          Login
         </button>
 
         <!-- Link -->
         <div class="text-center">
           <small class="text-muted text-center">
-            Already have an account? <a href="{% url 'login' %}">Login</a>.
+            Don't have an account yet? <a href="{% url 'register' %}">Register</a>.
           </small>
         </div>
-
+        
       </form>
 
     </div>
   </div> <!-- / .row -->
 </div> <!-- / .container -->
-
 {% endblock %}

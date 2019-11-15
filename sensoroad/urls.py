@@ -19,19 +19,28 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
 
+from django.contrib.auth import views
 from sensoroad.apps.api import urls as api_urls
-from sensoroad.apps.user.views import login, signup
+from sensoroad.apps.user.forms import UserLoginForm
 from sensoroad.apps.dashboard.views import dashboard_view
+from sensoroad.apps.user.views import SignUpView
 
 urlpatterns = [
-    path('accounts/', admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url('^api/', include(api_urls)),
 
     url('^$', dashboard_view, name='dashboard'),
     url('^dashboard/$', dashboard_view, name='dashboard'),
-    url('^login/$', login, name='login'),
-    url('^signup/$', signup, name='signup'),
+    url('^login/$', views.LoginView.as_view(
+        template_name="login.html",
+        authentication_form=UserLoginForm),
+        name='login'
+        ),
+    url('^register/$', SignUpView.as_view(),
+        name='register'
+        ),
 ]
 
 urlpatterns += static(

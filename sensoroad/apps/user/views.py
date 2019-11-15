@@ -1,16 +1,9 @@
-from django.shortcuts import render
-
-# Create your views here.
-
-
-from django.http import Http404, JsonResponse
+from .forms import SignUpForm
+from django.views import generic
+from django.urls import reverse_lazy
 
 
-def login(request):
-    return JsonResponse(dict(
-        success=True, message="login successfully"))
-
-
-def signup(request):
-    return JsonResponse(dict(
-        success=True, message="signup successfully"))
+class SignUpView(generic.CreateView):
+    form_class = SignUpForm
+    success_url = reverse_lazy('dashboard')
+    template_name = 'signup.html'

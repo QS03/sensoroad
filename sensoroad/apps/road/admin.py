@@ -1,7 +1,13 @@
 from django.contrib import admin
 
 # Register your models here.
-
 from .models import Road
 
-admin.site.register(Road)
+
+class RoadAdmin(admin.ModelAdmin):
+    model = Road
+    list_display = ['id', 'user', 'image', 'longitude', 'latitude', 'taken_at', 'rate', 'street', 'city', 'state']
+    search_fields = ('street', 'city', 'state')
+
+
+admin.site.register(Road, RoadAdmin)

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic.base import View
 
 # Create your views here.
 
@@ -8,5 +9,6 @@ from django.contrib.auth.decorators import login_required
 
 @login_required()
 def dashboard_view(request):
-    return JsonResponse(dict(
-        success=True, message="dashboard loaded successfully"))
+
+    context = {'user': request.user}
+    return render(request, 'dashboard.html', context)
