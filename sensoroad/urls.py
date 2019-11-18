@@ -32,7 +32,6 @@ urlpatterns = [
     url('^api/', include(api_urls)),
 
     url('^$', dashboard_view, name='dashboard'),
-    url('^dashboard/$', dashboard_view, name='dashboard'),
     url('^login/$', views.LoginView.as_view(
         template_name="login.html",
         authentication_form=UserLoginForm),
