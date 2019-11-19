@@ -3,9 +3,9 @@ from .base import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sensoroad',
+        'NAME': 'sensorydb_test',
         'USER': 'postgres',
-        'PASSWORD': 'p8y8ei6F2HHKybut',
+        'PASSWORD': 'sensorydb_test',
         'HOST': '172.27.160.3',
         'PORT': '5432',
     }
