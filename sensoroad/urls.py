@@ -20,7 +20,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from django.contrib.auth import views
-from django.views.generic import RedirectView
 from sensoroad.apps.api import urls as api_urls
 from sensoroad.apps.user.forms import UserLoginForm
 from sensoroad.apps.dashboard.views import dashboard_view
@@ -34,10 +33,13 @@ urlpatterns = [
 
     url('^$', dashboard_view, name='dashboard'),
     url('^login/$', views.LoginView.as_view(
-        template_name="login.html", authentication_form=UserLoginForm), name='login'),
-    url('^register/$', SignUpView.as_view(), name='register'),
-    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/assets/img/favicon.png')),
-
+        template_name="login.html",
+        authentication_form=UserLoginForm),
+        name='login'
+        ),
+    url('^register/$', SignUpView.as_view(),
+        name='register'
+        ),
 ]
 
 urlpatterns += static(
