@@ -41,7 +41,7 @@ map.on('load', function() {
     {type: "Feature", geometry: { coordinates: [-122.48610019683838, 37.82880236636284], type: "Point"}, 
     properties: {RATE: 5, LON: -122.48610019683838, LAT: 37.82880236636284, IMAGE_URL: "static/assets/img/test.jpg"}},
     {type: "Feature", geometry: { coordinates: [-122.48695850372314, 37.82931081282506], type: "Point"}, 
-    properties: {RATE: 5, LON: -122.48695850372314, LAT: 37.82931081282506, IMAGE_URL: "{% static '/assets/img/test.jpg' %}"}},
+    properties: {RATE: 5, LON: -122.48695850372314, LAT: 37.82931081282506, IMAGE_URL: "static/assets/img/test.jpg"}},
 
   ]
 
@@ -134,7 +134,7 @@ map.on('load', function() {
       visibility: 'none'
     },
     paint: {
-      'line-width': 1,
+      'line-width': 3,
       // Use a get expression (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-get)
       // to set the line-color to a feature property value.
       'line-color': ['match',
@@ -176,7 +176,7 @@ map.on('load', function() {
 
   map.on('mouseleave', 'points', function() {
     map.getCanvas().style.cursor = '';
-    popup.remove();
+    // popup.remove();
   });
 });
 
