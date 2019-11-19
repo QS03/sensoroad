@@ -7,11 +7,56 @@
     <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
 
     <!-- Libs CSS -->
-    <link rel="stylesheet" href="">
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
+
     <link rel="stylesheet" href="{% static 'assets/libs/highlight/styles/vs2015.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/libs/quill/dist/quill.core.css' %}">
     <link rel="stylesheet" href="{% static 'assets/libs/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/libs/flatpickr/dist/flatpickr.min.css' %}">
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+  
+      #map {
+        position: absolute;
+        top: 20;
+        bottom: 20;
+        width: 97%;
+      }
+
+      .mapboxgl-map .mapboxgl-popup{
+        /* right:100px; */
+        /* bottom:100px; */
+        top:auto;
+        left:auto;
+        position:fixed;
+        transform:none !important;
+      }
+
+      .mapboxgl-popup-close-button {
+        display: none;
+      }
+      .mapboxgl-popup-content {
+        width: 18rem;
+        position: absolute;
+        top: 20;
+        left: 20;
+        border: 5px solid red;
+
+      }
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 6px;
+      }
+    </style>
+
+    <!-- build:css assets/fonts/feather/feather.min.css -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/feather/feather.css' %}">
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{% static 'assets/css/theme.min.css' %}">
