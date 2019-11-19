@@ -36,7 +36,7 @@ class Road(models.Model):
             'longitude': self.longitude,
             'latitude': self.latitude,
             'taken_at': self.taken_at,
-            'device_id': self.user.id,
+            'device_id': self.user.username,
         }
         return json
 
