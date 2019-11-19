@@ -6,7 +6,7 @@ DATABASES = {
         'NAME': 'sensoroad',
         'USER': 'postgres',
         'PASSWORD': 'p8y8ei6F2HHKybut',
-        'HOST': '35.223.248.221',
+        'HOST': '172.27.160.3',
         'PORT': '5432',
     }
 }
