@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from django.contrib.auth import views
+from django.views.generic import RedirectView
 from sensoroad.apps.api import urls as api_urls
 from sensoroad.apps.user.forms import UserLoginForm
 from sensoroad.apps.dashboard.views import dashboard_view
