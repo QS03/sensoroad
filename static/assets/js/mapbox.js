@@ -134,7 +134,7 @@ map.on('load', function() {
       visibility: 'none'
     },
     paint: {
-      'line-width': 3,
+      'line-width': 5,
       // Use a get expression (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-get)
       // to set the line-color to a feature property value.
       'line-color': ['match',
@@ -156,7 +156,7 @@ map.on('load', function() {
 
   var popup = new mapboxgl.Popup;
 
-  map.on('mouseenter', 'points', function(e) {
+  map.on('click', 'points', function(e) {
     map.getCanvas().style.cursor = 'pointer';
     var lon = e.features[0].properties.LON;
     var lat = e.features[0].properties.LAT;
@@ -174,6 +174,9 @@ map.on('load', function() {
        .addTo(map);
   })
 
+  map.on('mouseenter', 'points', function(e) {
+    map.getCanvas().style.cursor = 'pointer';
+  })
   map.on('mouseleave', 'points', function() {
     map.getCanvas().style.cursor = '';
     // popup.remove();
