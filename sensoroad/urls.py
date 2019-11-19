@@ -37,5 +37,5 @@ urlpatterns = [
         template_name="login.html", authentication_form=UserLoginForm), name='login'),
     url('^register/$', SignUpView.as_view(), name='register'),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/assets/img/favicon.png')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
