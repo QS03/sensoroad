@@ -33,13 +33,9 @@ urlpatterns = [
 
     url('^$', dashboard_view, name='dashboard'),
     url('^login/$', views.LoginView.as_view(
-        template_name="login.html",
-        authentication_form=UserLoginForm),
-        name='login'
-        ),
-    url('^register/$', SignUpView.as_view(),
-        name='register'
-        ),
+        template_name="login.html", authentication_form=UserLoginForm), name='login'),
+    url('^register/$', SignUpView.as_view(), name='register'),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/assets/img/favicon.png')),
 ]
 
 urlpatterns += static(
