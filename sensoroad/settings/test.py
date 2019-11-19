@@ -1,11 +1,9 @@
 from .base import *
 
-from .base import *
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sensorydb',
+        'NAME': 'sensorydb_test',
         'USER': 'postgres',
         'PASSWORD': 'p8y8ei6F2HHKybut',
         'HOST': '172.27.160.3',
