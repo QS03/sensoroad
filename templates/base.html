@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
 
+
+    <link rel="stylesheet" href="{% static 'assets/libs/mapbox-gl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/mapbox-gl-geocoder.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/highlight/styles/vs2015.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/quill/dist/quill.core.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/flatpickr/dist/flatpickr.min.css' %}">
+
     <style>
       body {
         margin: 0;
@@ -60,11 +68,9 @@
 
     <title>{% block title %}Sensory{% endblock %}</title>
   </head>
-  <body>
+{#  <body class="d-flex align-items-center bg-white border-top-2 border-primary">#}
+    <body>
 
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
-    
     {% block content %}
     {% endblock %}    
     <!-- JAVASCRIPT
