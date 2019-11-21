@@ -6,74 +6,62 @@ var map = new mapboxgl.Map({
     zoom: 16
 });
 
-// var source = [{
-//   'point1': [-122.4833858013153, 37.829607404976734],
-//   'point2': [-122.4830961227417, 37.82932776098012],
-//   'point-rate': 1,
-//   'line-rate': 2
-// }];
+var pointsData = [
+    {coordinate: [-122.4833858013153, 37.829607404976734], rate: 1, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.4830961227417, 37.82932776098012], rate: 3, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48339653015138, 37.83270036637107], rate: 2, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48356819152832, 37.832056363179625], rate: 5, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48404026031496, 37.83114119107971], rate: 6, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48404026031496, 37.83049717427869], rate: 7, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48348236083984, 37.829920943955045], rate: 10, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48356819152832, 37.82954808664175], rate: 4, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48507022857666, 37.82944639795659], rate: 7, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48610019683838, 37.82880236636284], rate: 9, image_url: "static/assets/img/test.jpg"},
+    {coordinate: [-122.48695850372314, 37.82931081282506], rate: 9, image_url: "static/assets/img/test.jpg"}
+];
+
+var linesData = [
+    {coordinates: [[-122.4833858013153, 37.829607404976734], [-122.4830961227417, 37.82932776098012]], rate: 2},
+    {coordinates: [[-122.4830961227417, 37.82932776098012], [-122.48339653015138, 37.83270036637107]], rate: 3},
+    {coordinates: [[-122.48339653015138, 37.83270036637107], [-122.48356819152832, 37.832056363179625]], rate: 5},
+    {coordinates: [[-122.48356819152832, 37.832056363179625], [-122.48404026031496, 37.83114119107971]], rate: 1},
+    {coordinates: [[-122.48404026031496, 37.83114119107971], [-122.48404026031496, 37.83049717427869]], rate: 8},
+    {coordinates: [[-122.48404026031496, 37.83049717427869], [-122.48348236083984, 37.829920943955045]], rate: 9},
+    {coordinates: [[-122.48348236083984, 37.829920943955045], [-122.48356819152832, 37.82954808664175]], rate: 4},
+    {coordinates: [[-122.48356819152832, 37.82954808664175], [-122.48507022857666, 37.82944639795659]], rate: 10},
+    {coordinates: [[-122.48507022857666, 37.82944639795659], [-122.48610019683838, 37.82880236636284]], rate: 7},
+    {coordinates: [[-122.48610019683838, 37.82880236636284], [-122.48695850372314, 37.82931081282506]], rate: 6},
+];
 
 var colorRate = {
   1: '#880015', 2: '#ed1c24', 3: '#ffaec9', 4: '#ffc90e', 5: '#fff200', 
   6: '#efe4b0', 7: '#d7f187', 8: '#b4e61e', 9: '#22b14c', 10: '#0e471f'
-}
+};
 
 map.on('load', function() {
-  pointArray = [
-    {type: "Feature", geometry: { coordinates: [-122.4833858013153, 37.829607404976734], type: "Point"}, 
-    properties: {RATE: 3, LON: -122.4833858013153, LAT: 37.829607404976734, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.4830961227417, 37.82932776098012], type: "Point"}, 
-    properties: {RATE: 4, LON: -122.4830961227417, LAT: 37.82932776098012, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48339653015138, 37.83270036637107], type: "Point"}, 
-    properties: {RATE: 1, LON: -122.48339653015138, LAT: 37.83270036637107, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48356819152832, 37.832056363179625], type: "Point"}, 
-    properties: {RATE: 6, LON: -122.48356819152832, LAT: 37.832056363179625, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48404026031496, 37.83114119107971], type: "Point"}, 
-    properties: {RATE: 7, LON: -122.48404026031496, LAT: 37.83114119107971, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48404026031496, 37.83049717427869], type: "Point"}, 
-    properties: {RATE: 8, LON: -122.48404026031496, LAT: 37.83049717427869, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48348236083984, 37.829920943955045], type: "Point"}, 
-    properties: {RATE: 9, LON: -122.48348236083984, LAT: 37.829920943955045, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48356819152832, 37.82954808664175], type: "Point"}, 
-    properties: {RATE: 2, LON: -122.48356819152832, LAT: 37.82954808664175, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48507022857666, 37.82944639795659], type: "Point"}, 
-    properties: {RATE: 10, LON: -122.48507022857666, LAT: 37.82944639795659, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48610019683838, 37.82880236636284], type: "Point"}, 
-    properties: {RATE: 5, LON: -122.48610019683838, LAT: 37.82880236636284, IMAGE_URL: "static/assets/img/test.jpg"}},
-    {type: "Feature", geometry: { coordinates: [-122.48695850372314, 37.82931081282506], type: "Point"}, 
-    properties: {RATE: 5, LON: -122.48695850372314, LAT: 37.82931081282506, IMAGE_URL: "static/assets/img/test.jpg"}},
+    var mapPointsData = [];
+    for(var i = 0; i < pointsData.length; i++)
+    {
+        var item = {type: "Feature", geometry: { coordinates: pointsData[i].coordinate, type: "Point"},
+            properties: {RATE: pointsData[i].rate, LON: pointsData[i].coordinate[0], LAT: pointsData[i].coordinate[1],
+            IMAGE_URL: pointsData[i].image_url}};
+        mapPointsData.push(item);
+    }
 
-  ]
-
-  lineArray = [
-    {'type': 'Feature', 'properties': {RATE: 1},'geometry': {'type': 'LineString', 'coordinates': 
-      [[-122.4833858013153, 37.829607404976734], [-122.4830961227417, 37.82932776098012]]}},
-    // {'type': 'Feature', 'properties': {RATE: 2},'geometry': {'type': 'LineString', 'coordinates': 
-    //   [[-122.4830961227417, 37.82932776098012], [-122.48339653015138, 37.83270036637107]]}},
-    {'type': 'Feature', 'properties': {RATE: 5},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48339653015138, 37.83270036637107], [-122.48356819152832, 37.832056363179625]]}},
-    {'type': 'Feature', 'properties': {RATE: 7},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48356819152832, 37.832056363179625], [-122.48404026031496, 37.83114119107971]]}},
-    {'type': 'Feature', 'properties': {RATE: 8},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48404026031496, 37.83114119107971], [-122.48404026031496, 37.83049717427869]]}},
-    {'type': 'Feature', 'properties': {RATE: 10},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48404026031496, 37.83049717427869], [-122.48348236083984, 37.829920943955045]]}},
-    {'type': 'Feature', 'properties': {RATE: 5},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48348236083984, 37.829920943955045], [-122.48356819152832, 37.82954808664175]]}},
-    {'type': 'Feature', 'properties': {RATE: 6},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48356819152832, 37.82954808664175], [-122.48507022857666, 37.82944639795659]]}},
-    {'type': 'Feature', 'properties': {RATE: 4},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48507022857666, 37.82944639795659], [-122.48610019683838, 37.82880236636284]]}},
-    {'type': 'Feature', 'properties': {RATE: 3},'geometry': {'type': 'LineString', 'coordinates': 
-    [[-122.48610019683838, 37.82880236636284], [-122.48695850372314, 37.82931081282506]]}},
-
-  ]
+    console.log(mapPointsData);
+    var mapLinesData = [];
+    for(var i = 0; i < linesData.length; i++)
+    {
+        var item = {'type': 'Feature', 'properties': {RATE: linesData[i].rate},'geometry': {'type': 'LineString', 'coordinates':
+            linesData[i].coordinates}};
+        mapLinesData.push(item);
+    }
 
   map.addSource('points', {
     type: "geojson",
     data: {
       "type": "FeatureCollection",
-      "features": pointArray
+      "features": mapPointsData
     }
   });
 
@@ -81,7 +69,7 @@ map.on('load', function() {
       'type': 'geojson',
       'data': {
           'type': 'FeatureCollection',
-          'features': lineArray
+          'features': mapLinesData
       }
   })
 
@@ -158,16 +146,19 @@ map.on('load', function() {
 
   map.on('click', 'points', function(e) {
     map.getCanvas().style.cursor = 'pointer';
+
     var lon = e.features[0].properties.LON;
     var lat = e.features[0].properties.LAT;
     var rate = e.features[0].properties.RATE;
     var coordinates = new mapboxgl.LngLat(lon, lat);
 
-    var image = "<img src='" + e.features[0].properties.IMAGE_URL + "' style='width:100%'/><hr>";
+    var image = "<a href='" + e.features[0].properties.IMAGE_URL + "' data-lightbox='image'>"+
+        "<img src='" + e.features[0].properties.IMAGE_URL + "' style='width:100%'/></a>";
+
     var rating = '<h3> Rating:' + rate + '</h3>';
     var position = "<table style='border: solid 1px gray'><tr><th>Langitude</th><td>" + lon + "</td></tr><tr><th>Longitude</th><td>" + lat + "</td></tr></table>";
             
-    content = image + rating + position;
+    content = image + '<hr>' + rating + position;
 
     popup.setLngLat(coordinates)
        .setHTML(content)
