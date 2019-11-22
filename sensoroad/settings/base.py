@@ -25,6 +25,9 @@ SECRET_KEY = '!b5y0ra$-6x8)@pfk43w1cza6#esxfzxl%)c$f)1&x#ae20a*m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+HOST_NAME = 'localhost:8000'
+MOBILE_HOST = 'localhost:8000'
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'sensoroad.apps.api',
     'sensoroad.apps.user',
     'sensoroad.apps.road',
+    'sensoroad.apps.rating',
     'sensoroad.apps.dashboard',
 ]
 
@@ -150,6 +154,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiY3liZXJtaWtlIiwiYSI6ImNqYjVibW56eThjeDYyd25xbGt3bDk3ejUifQ.gouhmRkcSwGgpSMXQTaIUA'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

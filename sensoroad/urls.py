@@ -29,7 +29,7 @@ from sensoroad.apps.user.views import SignUpView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url('^api/', include(api_urls)),
 
     url('^$', dashboard_view, name='dashboard'),
