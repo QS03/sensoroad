@@ -10,9 +10,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 from django.utils.datastructures import MultiValueDictKeyError
+from django.conf import settings
 
 from sensoroad.apps.road.models import Road
 from sensoroad.apps.user.models import User
+from sensoroad.apps.rating.tasks import task_rating
 
 
 @csrf_exempt
@@ -22,7 +24,13 @@ def upload_image(request):
         status = 'failed'
         message = 'Unauthorized'
         code = HTTPStatus.UNAUTHORIZED  # 401
-        return JsonResponse({'status': status, 'message': message}, status=code)
+        return JsonResponse(
+            {
+                'meta': {'status': status},
+                'message': message
+            },
+            status=code,
+        )
 
     try:
         body = request.POST
@@ -33,19 +41,18 @@ def upload_image(request):
         road.longitude = float(body['longitude'])
         road.latitude = float(body['latitude'])
         road.taken_at = datetime.strptime(body['taken_at'], "%Y-%m-%dT%H:%M:%S")
-        if request.user.username == body['device_id']:
-            road.user = User.objects.get(pk=request.user.id)
-        else:
-            status = 'failed'
-            message = 'Forbidden operation'
-            code = HTTPStatus.FORBIDDEN  # 403
-            return JsonResponse({'status': status, 'message': message}, status=code)
-
+        road.user = User.objects.get(pk=request.user.id)
     except MultiValueDictKeyError:
         status = 'failed'
         message = 'Missing required key-value pair'
         code = HTTPStatus.BAD_REQUEST  # 400
-        return JsonResponse({'status': status, 'message': message}, status=code)
+        return JsonResponse(
+            {
+                'meta': {'status': status},
+                'message': message
+            },
+            status=code,
+        )
 
     try:
         road.save()
@@ -53,6 +60,14 @@ def upload_image(request):
         obj = Road.objects.get(pk=road.id)
         message = obj.get_object_for_mobile()
         code = HTTPStatus.OK
+
+        return JsonResponse(
+            {
+                'meta': {'status': status},
+                'data': message,
+            },
+            status=code,
+        )
     except IntegrityError:
         obj = Road.objects.get(pk=road.id)
         status = 'conflict'
@@ -62,6 +77,12 @@ def upload_image(request):
         status = 'failed'
         message = 'unknown error'
         code = HTTPStatus.INTERNAL_SERVER_ERROR  # 500
-    finally:
-        return JsonResponse({'status': status, 'message': message}, status=code)
+
+    return JsonResponse(
+        {
+            'meta': {'status': status},
+            'message': message,
+        },
+        status=code,
+    )
 

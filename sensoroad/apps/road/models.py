@@ -29,19 +29,38 @@ class Road(models.Model):
         return "{}".format(self.id)
 
     def get_object_for_mobile(self):
+        image_path = settings.MEDIA_URL + self.image.path.split(settings.MEDIA_URL)[1]
         json = {
+            'id': self.id,
+            'previous_id': self.previous_id,
+            'image': image_path,
+            'longitude': self.longitude,
+            'latitude': self.latitude,
+            'taken_at': self.taken_at
+        }
+        return json
+
+    def get_object_for_dashboard(self, hostname):
+        image_path = settings.MEDIA_URL + self.image.path.split(settings.MEDIA_URL)[1]
+        data = {
+            'image': image_path,
+            'longitude': self.longitude,
+            'latitude': self.latitude,
+            'point_rate': self.point_rate,
+            'line_rate': self.line_rate,
+            'street': self.street,
+            'city': self.city,
+            'state': self.state,
+        }
+        return data
+
+    def get_object_for_rating(self):
+        data = {
             'id': self.id,
             'previous_id': self.previous_id,
             'image': self.image.path,
             'longitude': self.longitude,
             'latitude': self.latitude,
-            'taken_at': self.taken_at,
-            'device_id': self.user.username,
         }
-        return json
+        return data
 
-    def get_object_for_dashboard(self):
-        pass
-
-    def get_object_for_rating(self):
-        pass
