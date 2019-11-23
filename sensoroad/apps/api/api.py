@@ -14,7 +14,7 @@ from django.conf import settings
 
 from sensoroad.apps.road.models import Road
 from sensoroad.apps.user.models import User
-from sensoroad.apps.rating.tasks import task_rating
+from sensoroad.apps.rating.tasks import task_rating_georeverse
 
 
 @csrf_exempt
@@ -60,6 +60,7 @@ def upload_image(request):
         obj = Road.objects.get(pk=road.id)
         message = obj.get_object_for_mobile()
         code = HTTPStatus.OK
+        task_rating_georeverse.delay(road.get_object_for_rating())
 
         return JsonResponse(
             {

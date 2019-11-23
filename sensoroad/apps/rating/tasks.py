@@ -9,9 +9,12 @@ from sensoroad.apps.road.models import Road
 class MapboxError(Exception):
     pass
 
+class RatingError(Exception):
+    pass
+
 @shared_task
 def task_rating_georeverse(rating_data):
-    road = Road.objects.get(pk=rating_data['id'].hex)
+    road = Road.objects.get(pk=rating_data['id'])
 
     longitude = rating_data['longitude']
     latitude = rating_data['latitude']
@@ -35,14 +38,28 @@ def task_rating_georeverse(rating_data):
         road.delete()
         return
 
+    image_path = rating_data['image']
+    print("image path:{}".format(image_path))
     try:
-        previous_road = Road.objects.get(pk=rating_data['previous_id'].hex)
-        previous_rate = previous_road.point_rate
+        rate = cracker(image_path)
+        point_rate = int(rate)
+        if point_rate < 1 or point_rate > 10:
+            raise RatingError
+    except RatingError:
+        road.delete()
+        return
+    except:
+        road.delete()
+        return
+
+    try:
+        previous_road = Road.objects.get(pk=rating_data['previous_id'])
+        if previous_road.point_rate is not None:
+            previous_rate = int(previous_road.point_rate)
+        else:
+            previous_rate = 0
     except Road.DoesNotExist:
         previous_rate = 0
-
-    image_path = rating_data['image']
-    point_rate = cracker(image_path)
 
     line_rate = point_rate
     if previous_rate != 0:

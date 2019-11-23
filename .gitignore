@@ -5,3 +5,5 @@ media/
 static_root/
 __pycache__
 *.pyc
+*.log
+worker.*

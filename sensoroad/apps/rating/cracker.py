@@ -49,13 +49,13 @@ def get_image(image_path):
 
 
 def cracker(image_path):
+    print(image_path)
     # Create a pandas dataframe for 244x956 = 233265 pixels
     col = [x for x in range(233264)]
 
     road_pixels = pd.DataFrame(columns=col)
 
     z = 0
-
     road = get_image(image_path)
     img = road
     #         show(img)
