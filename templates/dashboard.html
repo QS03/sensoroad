@@ -9,7 +9,7 @@
         position: absolute;
         top: 20;
         bottom: 20;
-        width: 97%;
+        width: 95%;
     }
     .mapboxgl-map .mapboxgl-popup{
         top:auto;
@@ -770,8 +770,23 @@
 
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="sidebarCollapse">
-
           <!-- Divider -->
+          <hr class="my-3">
+
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" style="width: 100%;">
+              Select City ...
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 100%;">
+              {% for city_state_item in city_state_list %}
+                <li>
+                  <a class="dropdown-item" href='/maps/{{ city_state_item }} }}'>{{ city_state_item }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+
           <hr class="my-3">
 
           <!-- Layer Select -->
@@ -827,36 +842,42 @@
           </div>
 
           <div class="card">
-              <div class="card-header">
-                <h4 class="card-header-title">
-                  Data Type
-                </h4>
-              </div>
-              <div class="card-body">
-                <ul class="list-group list-group-lg" style='display: inline;'>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class='col-4' style='text-align: center;'>
-                        points
-                      </div>
-                      <div class="col-4">
-                        <!-- Toggle -->
-                        <div class="custom-control custom-checkbox-toggle">
-                          <input type="checkbox" class="custom-control-input" id="toggleMode">
-                          <label class="custom-control-label" for="toggleMode"></label>
-                        </div>
-                      </div>
-                      <div class='col-4' style='text-align: center;'>
-                        lines
-                      </div>
-
-                    </div>
-                  </li>
-
-                </ul>
-              </div>
-          
+            <div class="card-header">
+              <h4 class="card-header-title">
+                Data Type
+              </h4>
             </div>
+            <div class="card-body">
+              <ul class="list-group list-group-lg" style='display: inline;'>
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class='col-4' style='text-align: center;'>
+                      points
+                    </div>
+                    <div class="col-4">
+                      <!-- Toggle -->
+                      <div class="custom-control custom-checkbox-toggle">
+                        <input type="checkbox" class="custom-control-input" id="toggleMode">
+                        <label class="custom-control-label" for="toggleMode"></label>
+                      </div>
+                    </div>
+                    <div class='col-4' style='text-align: center;'>
+                      lines
+                    </div>
+
+                  </div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+
+          <a href="accounts/logout" class="btn btn-white">
+            Log out
+          </a>
+
+          <hr>
+
 
         </div> <!-- / .navbar-collapse -->
 
@@ -906,6 +927,10 @@
 
     <script src="{% static 'assets/libs/lightbox/js/lightbox.js' %}"></script>
     <script src="{% static 'assets/libs/magnific-popup/jquery.magnific-popup.js' %}"></script>
+
+    <script type="text/javascript">
+      selectedCityState = '{{ sel_city_state }}';
+    </script>
     <!-- mapbox -->
     <script src="{% static 'assets/js/mapbox.js' %}"></script>
 
