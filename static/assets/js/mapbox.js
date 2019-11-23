@@ -1,31 +1,38 @@
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2ViZGV2MTAyOCIsImEiOiJjazJ5aHdrYWswODhrM2x0NDY5NmgyNmJhIn0.esJEdNvrfUWs1o8wcFiWvg';
+mapboxgl.accessToken = mapboxToken;//'pk.eyJ1Ijoid2ViZGV2MTAyOCIsImEiOiJjazJ5aHdrYWswODhrM2x0NDY5NmgyNmJhIn0.esJEdNvrfUWs1o8wcFiWvg';
 
-var pointsData = [
-  {coordinate: [-122.4833858013153, 37.829607404976734], rate: 1, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.4830961227417, 37.82932776098012], rate: 3, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48339653015138, 37.83270036637107], rate: 2, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48356819152832, 37.832056363179625], rate: 5, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48404026031496, 37.83114119107971], rate: 6, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48404026031496, 37.83049717427869], rate: 7, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48348236083984, 37.829920943955045], rate: 10, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48356819152832, 37.82954808664175], rate: 4, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48507022857666, 37.82944639795659], rate: 7, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48610019683838, 37.82880236636284], rate: 9, image_url: "static/assets/img/test.jpg"},
-  {coordinate: [-122.48695850372314, 37.82931081282506], rate: 9, image_url: "static/assets/img/test.jpg"}
-];
 
-var linesData = [
-  {coordinates: [[-122.4833858013153, 37.829607404976734], [-122.4830961227417, 37.82932776098012]], rate: 2},
-  {coordinates: [[-122.4830961227417, 37.82932776098012], [-122.48339653015138, 37.83270036637107]], rate: 3},
-  {coordinates: [[-122.48339653015138, 37.83270036637107], [-122.48356819152832, 37.832056363179625]], rate: 5},
-  {coordinates: [[-122.48356819152832, 37.832056363179625], [-122.48404026031496, 37.83114119107971]], rate: 1},
-  {coordinates: [[-122.48404026031496, 37.83114119107971], [-122.48404026031496, 37.83049717427869]], rate: 8},
-  {coordinates: [[-122.48404026031496, 37.83049717427869], [-122.48348236083984, 37.829920943955045]], rate: 9},
-  {coordinates: [[-122.48348236083984, 37.829920943955045], [-122.48356819152832, 37.82954808664175]], rate: 4},
-  {coordinates: [[-122.48356819152832, 37.82954808664175], [-122.48507022857666, 37.82944639795659]], rate: 10},
-  {coordinates: [[-122.48507022857666, 37.82944639795659], [-122.48610019683838, 37.82880236636284]], rate: 7},
-  {coordinates: [[-122.48610019683838, 37.82880236636284], [-122.48695850372314, 37.82931081282506]], rate: 6}
-];
+// var pointsData = [
+//   {coordinate: [-122.4833858013153, 37.829607404976734], rate: 1, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.4830961227417, 37.82932776098012], rate: 3, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48339653015138, 37.83270036637107], rate: 2, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48356819152832, 37.832056363179625], rate: 5, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48404026031496, 37.83114119107971], rate: 6, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48404026031496, 37.83049717427869], rate: 7, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48348236083984, 37.829920943955045], rate: 10, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48356819152832, 37.82954808664175], rate: 4, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48507022857666, 37.82944639795659], rate: 7, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48610019683838, 37.82880236636284], rate: 9, image_url: "static/assets/img/test.jpg"},
+//   {coordinate: [-122.48695850372314, 37.82931081282506], rate: 9, image_url: "static/assets/img/test.jpg"}
+// ];
+//
+// var linesData = [
+//   {coordinates: [[-122.4833858013153, 37.829607404976734], [-122.4830961227417, 37.82932776098012]], rate: 2},
+//   {coordinates: [[-122.4830961227417, 37.82932776098012], [-122.48339653015138, 37.83270036637107]], rate: 3},
+//   {coordinates: [[-122.48339653015138, 37.83270036637107], [-122.48356819152832, 37.832056363179625]], rate: 5},
+//   {coordinates: [[-122.48356819152832, 37.832056363179625], [-122.48404026031496, 37.83114119107971]], rate: 1},
+//   {coordinates: [[-122.48404026031496, 37.83114119107971], [-122.48404026031496, 37.83049717427869]], rate: 8},
+//   {coordinates: [[-122.48404026031496, 37.83049717427869], [-122.48348236083984, 37.829920943955045]], rate: 9},
+//   {coordinates: [[-122.48348236083984, 37.829920943955045], [-122.48356819152832, 37.82954808664175]], rate: 4},
+//   {coordinates: [[-122.48356819152832, 37.82954808664175], [-122.48507022857666, 37.82944639795659]], rate: 10},
+//   {coordinates: [[-122.48507022857666, 37.82944639795659], [-122.48610019683838, 37.82880236636284]], rate: 7},
+//   {coordinates: [[-122.48610019683838, 37.82880236636284], [-122.48695850372314, 37.82931081282506]], rate: 6}
+// ];
+
+var pointsData = pointsData;
+var linesData = linesData;
+
+// console.log(pointsData);
+// console.log(linesData);
 
 var colorRate = {
   1: '#880015', 2: '#ed1c24', 3: '#ffaec9', 4: '#ffc90e', 5: '#fff200',
@@ -45,11 +52,13 @@ $.ajax({
 }).done(function(data) {
 
   mapCenter = data.features[0].center;
-  console.log(mapCenter);
+
+  // console.log(mapCenter);
+
   map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v10',
-    center: mapCenter,
+    center: [-122.4833858013153, 37.829607404976734], //mapCenter,
     zoom: 16,
     minZoom: 16,
   });
@@ -211,19 +220,120 @@ function getMatch(coordinates, radius, profile, lineColor, layerID) {
   });
 }
 
+var viewMode = 'point'
+
+$('#layer1').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line1', 'visibility', 'visible');
+  }
+});
+
+$('#layer2').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line2', 'visibility', 'visible');
+  }
+});
+
+$('#layer3').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line3', 'visibility', 'visible');
+  }
+});
+
+
+$('#layer4').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line4', 'visibility', 'visible');
+  }
+});
+
+
+$('#layer5').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line5', 'visibility', 'visible');
+  }
+});
+
+
+$('#layer6').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line6', 'visibility', 'visible');
+  }
+});
+
+
+$('#layer7').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line7', 'visibility', 'visible');
+  }
+});
+
+
+$('#layer8').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line8', 'visibility', 'visible');
+  }
+});
+
+
+$('#layer9').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line9', 'visibility', 'visible');
+  }
+});
+
+$('#layer10').click(function (data) {
+  if (viewMode === 'line') {
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
+    map.setLayoutProperty('points', 'visibility', 'none');
+    map.setLayoutProperty('line10', 'visibility', 'visible');
+  }
+});
+
+
 
 $('#toggleMode').click(function(data){
   var atLeastOneIsChecked = $('input[id="toggleMode"]:checked').length > 0;
   if(atLeastOneIsChecked)
   {
+    viewMode = 'line';
     map.setLayoutProperty('points', 'visibility', 'none');
     for(var i = 1; i <= 10; i++)
       map.setLayoutProperty('line'+i.toString(), 'visibility', 'visible');
   }
   else
   {
+    viewMode = 'point';
     map.setLayoutProperty('points', 'visibility', 'visible');
-    for(i = 1; i <= 10; i++)
+    for(var i = 1; i <= 10; i++)
       map.setLayoutProperty('line'+i.toString(), 'visibility', 'none');
   }
 });
