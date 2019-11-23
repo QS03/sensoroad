@@ -223,10 +223,11 @@ function getMatch(coordinates, radius, profile, lineColor, layerID) {
 var viewMode = 'point'
 
 $('#layer1').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -235,10 +236,11 @@ $('#layer1').click(function (data) {
 });
 
 $('#layer2').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[2], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[2], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -247,10 +249,11 @@ $('#layer2').click(function (data) {
 });
 
 $('#layer3').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[3], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[3], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -260,10 +263,10 @@ $('#layer3').click(function (data) {
 
 
 $('#layer4').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[4], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[4], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -273,10 +276,11 @@ $('#layer4').click(function (data) {
 
 
 $('#layer5').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[5], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[5], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -286,10 +290,11 @@ $('#layer5').click(function (data) {
 
 
 $('#layer6').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[6], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[6], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -299,10 +304,11 @@ $('#layer6').click(function (data) {
 
 
 $('#layer7').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[7], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[7], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -312,10 +318,12 @@ $('#layer7').click(function (data) {
 
 
 $('#layer8').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[8], "border-radius": "20px"});
+
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[8], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -325,10 +333,11 @@ $('#layer8').click(function (data) {
 
 
 $('#layer9').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[9], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[9], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
@@ -337,14 +346,26 @@ $('#layer9').click(function (data) {
 });
 
 $('#layer10').click(function (data) {
-  for(var i = 1; i <= 10; i++)
-    $('#layer'+i.toString()).css({"border": "none"});
-  $(this).css({"border": "1px solid "+colorRate[10], "border-radius": "20px"});
   if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[10], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
       map.setLayoutProperty('line' + j.toString(), 'visibility', 'none');
     map.setLayoutProperty('points', 'visibility', 'none');
     map.setLayoutProperty('line10', 'visibility', 'visible');
+  }
+});
+
+$('#layerAll').click(function (data) {
+  if (viewMode === 'line') {
+    for(var i = 1; i <= 10; i++)
+      $('#layer'+i.toString()).css({"border": "none"});
+    $(this).css({"border": "1px solid black", "border-radius": "20px"});
+    for (var j = 1; j <= 10; j++)
+      map.setLayoutProperty('line' + j.toString(), 'visibility', 'visible');
+    map.setLayoutProperty('points', 'visibility', 'none');
   }
 });
 
