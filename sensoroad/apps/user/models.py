@@ -31,8 +31,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         choices=MEMBER_CHOICES,
         default='admin',
     )
-    city = models.CharField(max_length=255)
-    state = models.CharField(max_length=255)
+    city = models.CharField(max_length=255, blank=True, null=True)
+    state = models.CharField(max_length=255, blank=True, null=True)
 
     objects = UserManager()
 
