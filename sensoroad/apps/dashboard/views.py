@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.base import View
 from django.shortcuts import redirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.http import Http404
 
 # Create your views here.
 
@@ -9,6 +12,8 @@ from django.contrib.auth.decorators import login_required
 from sensoroad.settings.base import MAPBOX_ACCESS_TOKEN
 import json
 
+from sensoroad.apps.road.models import Road
+'''
 city_state_list =  ['San Francisco, Califonia', 'New York, New York', 'Los Angeles, Califonia']
 
 points_data = [
@@ -23,7 +28,7 @@ points_data = [
   {'coordinate': [-122.48507022857666, 37.82944639795659], 'rate': 7, 'image_url': "static/assets/img/test.jpg"},
   {'coordinate': [-122.48610019683838, 37.82880236636284], 'rate': 9, 'image_url': "static/assets/img/test.jpg"},
   {'coordinate': [-122.48695850372314, 37.82931081282506], 'rate': 9, 'image_url': "static/assets/img/test.jpg"}
-];
+]
 
 lines_data = [
   {'coordinates': [[-122.4833858013153, 37.829607404976734], [-122.4830961227417, 37.82932776098012]], 'rate': 2},
@@ -36,22 +41,115 @@ lines_data = [
   {'coordinates': [[-122.48356819152832, 37.82954808664175], [-122.48507022857666, 37.82944639795659]], 'rate': 10},
   {'coordinates': [[-122.48507022857666, 37.82944639795659], [-122.48610019683838, 37.82880236636284]], 'rate': 7},
   {'coordinates': [[-122.48610019683838, 37.82880236636284], [-122.48695850372314, 37.82931081282506]], 'rate': 6}
-];
+]
+'''
 
 def dashboard_view(request):
   if not request.user.is_authenticated:
     return redirect('login')
 
-  sel_city_state = city_state_list[0]
+  if request.user.member_type == 'mobile':
+    return render_to_response('404.html')
 
-  context = {'user': request.user, 'city_state_list': city_state_list, 'sel_city_state': sel_city_state,
-             'points_data': json.dumps(points_data), 'lines_data': json.dumps(lines_data), 'mapbox_access_token': MAPBOX_ACCESS_TOKEN}
-  return render(request, 'dashboard.html', context)
+  if request.user.member_type == 'user':
+    city = request.user.city
+    state = request.user.state
+    sel_city_state = {'city': city, 'state': state}
+    city_state_list = []
 
-def city_view(request, sel_city_state):
+    points_data = []
+    lines_data = []
+    points = Road.objects.filter(city=city).filter(state=state)
+    for point in points:
+      res = point.get_object_for_dashboard()
+      points_data.append(res['point_data'])
+      lines_data.append(res['line_data'])
+
+    context = {
+      'user': request.user,
+      'city_state_list': city_state_list,
+      'sel_city_state': sel_city_state,
+      'points_data': json.dumps(points_data),
+      'lines_data': json.dumps(lines_data),
+      'mapbox_access_token': MAPBOX_ACCESS_TOKEN
+    }
+    return render(request, 'dashboard.html', context)
+
+  if request.user.member_type == 'admin':
+    points_data = []
+    lines_data = []
+    city_state_list = []
+    points = Road.objects.exclude(city='').exclude(state='')
+    for point in points:
+      res = point.get_object_for_dashboard()
+      points_data.append(res['point_data'])
+      lines_data.append(res['line_data'])
+      city_state_list.append({'city': point.city, 'state': point.state})
+
+    city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
+    city = request.user.city
+    state = request.user.state
+    if city == '' or state == '' or city is None or state is None:
+      sel_city_state = city_state_list[0]
+    else:
+      sel_city_state = {'city': city, 'state': state}
+
+    context = {
+      'user': request.user,
+      'city_state_list': city_state_list,
+      'sel_city_state': sel_city_state,
+      'points_data': json.dumps(points_data),
+      'lines_data': json.dumps(lines_data),
+      'mapbox_access_token': MAPBOX_ACCESS_TOKEN
+    }
+    return render(request, 'dashboard.html', context)
+
+
+def city_view(request, city, state):
   if not request.user.is_authenticated:
     return redirect('login')
 
-  context = {'user': request.user, 'city_state_list': city_state_list, 'sel_city_state': sel_city_state,
-             'points_data': json.dumps(points_data), 'lines_data': json.dumps(lines_data), 'mapbox_access_token': MAPBOX_ACCESS_TOKEN}
+  if request.user.member_type != 'admin':
+    return render_to_response('404.html')
+
+  points_data = []
+  lines_data = []
+  points = Road.objects.filter(city=city).filter(state=state)
+  for point in points:
+    res = point.get_object_for_dashboard()
+    points_data.append(res['point_data'])
+    lines_data.append(res['line_data'])
+
+  city_state_list = []
+  points = Road.objects.exclude(city='').exclude(state='')
+  for point in points:
+    city_state_list.append({'city': point.city, 'state': point.state})
+
+  city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
+  if city == '' or state == '' or city is None or state is None:
+    sel_city_state = city_state_list[0]
+  else:
+    sel_city_state = {'city': city, 'state': state}
+
+  context = {
+    'user': request.user,
+    'city_state_list': city_state_list,
+    'sel_city_state': sel_city_state,
+    'points_data': json.dumps(points_data),
+    'lines_data': json.dumps(lines_data),
+    'mapbox_access_token': MAPBOX_ACCESS_TOKEN
+  }
   return render(request, 'dashboard.html', context)
+
+
+def handler404(request, exception, template_name="404.html"):
+  response = render_to_response("404.html")
+  response.status_code = 404
+  return response
+
+
+def handler500(request, *args, **argv):
+    response = render_to_response('500.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 500
+    return response

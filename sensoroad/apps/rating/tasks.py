@@ -1,3 +1,4 @@
+import uuid
 from celery import shared_task
 from sensoroad.apps.rating.cracker import cracker
 from django.conf import settings
@@ -52,14 +53,17 @@ def task_rating_georeverse(rating_data):
         road.delete()
         return
 
-    try:
-        previous_road = Road.objects.get(pk=rating_data['previous_id'])
-        if previous_road.point_rate is not None:
-            previous_rate = int(previous_road.point_rate)
-        else:
-            previous_rate = 0
-    except Road.DoesNotExist:
-        previous_rate = 0
+    if rating_data['previous_id'] == uuid.UUID('00000000-0000-0000-0000-000000000000').hex:
+        previous_rate = point_rate
+    else:
+        try:
+            previous_road = Road.objects.get(pk=rating_data['previous_id'])
+            if previous_road.point_rate is not None:
+                previous_rate = int(previous_road.point_rate)
+            else:
+                previous_rate = point_rate
+        except Road.DoesNotExist:
+            previous_rate = point_rate
 
     line_rate = point_rate
     if previous_rate != 0:

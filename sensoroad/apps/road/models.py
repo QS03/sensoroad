@@ -40,19 +40,51 @@ class Road(models.Model):
         }
         return json
 
-    def get_object_for_dashboard(self, hostname):
+    def get_object_for_dashboard(self):
         image_path = settings.MEDIA_URL + self.image.path.split(settings.MEDIA_URL)[1]
-        data = {
-            'image': image_path,
-            'longitude': self.longitude,
-            'latitude': self.latitude,
-            'point_rate': self.point_rate,
-            'line_rate': self.line_rate,
-            'street': self.street,
-            'city': self.city,
-            'state': self.state,
+
+        if self.point_rate is None:
+            point_rate = 0
+        else:
+            point_rate = int(self.point_rate)
+
+        try:
+            previous_road = Road.objects.get(pk=self.previous_id)
+
+            if previous_road.point_rate is None:
+                previous_point_rate = point_rate
+            else:
+                previous_point_rate = int(previous_road.point_rate)
+
+            previous_point = {
+                'longitude': previous_road.longitude,
+                'latitude': previous_road.latitude,
+            }
+        except Road.DoesNotExist:
+            previous_point = {
+                'longitude': self.longitude,
+                'latitude': self.latitude,
+            }
+            previous_point_rate = point_rate
+
+        point_data = {
+             'coordinate': [self.longitude, self.latitude],
+             'rate': point_rate,
+             'image_url': image_path
+         }
+
+        line_data = {
+            'coordinates': [
+                [self.longitude, self.latitude],
+                [previous_point['longitude'], previous_point['latitude']],
+            ],
+            'rate': int((point_rate + previous_point_rate)/2)
         }
-        return data
+
+        return {
+            'point_data': point_data,
+            'line_data': line_data
+        }
 
     def get_object_for_rating(self):
         data = {

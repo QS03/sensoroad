@@ -12,7 +12,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'sensorydb',
-        'USER': 'postgres',
+        'USER': 'sensory',
         'PASSWORD': 'p8y8ei6F2HHKybut',
         'HOST': HOST_ADDRESS,
         'PORT': '5432',

@@ -27,6 +27,9 @@ from sensoroad.apps.dashboard.views import dashboard_view
 from sensoroad.apps.user.views import SignUpView
 from sensoroad.apps.dashboard.views import city_view
 
+handler404 = 'sensoroad.apps.dashboard.views.handler404'
+handler500 = 'sensoroad.apps.dashboard.views.handler500'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
@@ -39,6 +42,6 @@ urlpatterns = [
     url('^register/$', SignUpView.as_view(), name='register'),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/assets/img/favicon.png')),
 
-    path('maps/<str:sel_city_state>', city_view)
+    path('map/<str:city>/<str:state>', city_view)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

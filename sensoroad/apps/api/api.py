@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 from http import HTTPStatus
 
+import iso8601
 from django.db import IntegrityError
 from django.core import serializers
 from django.http import JsonResponse
@@ -40,8 +41,19 @@ def upload_image(request):
         road.image = request.FILES['image']
         road.longitude = float(body['longitude'])
         road.latitude = float(body['latitude'])
-        road.taken_at = datetime.strptime(body['taken_at'], "%Y-%m-%dT%H:%M:%S")
+        road.taken_at = iso8601.parse_date(body['taken_at'])
         road.user = User.objects.get(pk=request.user.id)
+    except ValueError:
+        status = 'failed'
+        message = 'Invalid key-value pair'
+        code = HTTPStatus.UNPROCESSABLE_ENTITY  # 422
+        return JsonResponse(
+            {
+                'meta': {'status': status},
+                'message': message
+            },
+            status=code,
+        )
     except MultiValueDictKeyError:
         status = 'failed'
         message = 'Missing required key-value pair'

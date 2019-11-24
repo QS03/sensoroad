@@ -776,12 +776,12 @@
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false" style="width: 100%;">
-              {{ sel_city_state }}
+              {{ sel_city_state.city }}, {{ sel_city_state.state }}
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 100%;">
               {% for city_state_item in city_state_list %}
                 <li>
-                  <a class="dropdown-item" href='/maps/{{ city_state_item }}'>{{ city_state_item }}</a>
+                  <a class="dropdown-item" href='/map/{{ city_state_item.city }}/{{ city_state_item.state }}'>{{ city_state_item.city }}, {{ city_state_item.state }}</a>
                 </li>
               {% endfor %}
             </ul>
@@ -933,7 +933,7 @@
     <script src="{% static 'assets/libs/magnific-popup/jquery.magnific-popup.js' %}"></script>
 
     <script type="text/javascript">
-      selectedCityState = '{{ sel_city_state }}';
+      selectedCityState = '{{ sel_city_state.city }}, {{ sel_city_state.state }}';
       pointsData = JSON.parse('{{ points_data | escapejs }}');
       linesData = JSON.parse('{{ lines_data | escapejs }}');
       mapboxToken = '{{ mapbox_access_token }}';
