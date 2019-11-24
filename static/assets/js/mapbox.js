@@ -59,8 +59,8 @@ $.ajax({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v10',
     center: [-122.4833858013153, 37.829607404976734], //mapCenter,
-    zoom: 16,
-    minZoom: 16,
+    zoom: 14,
+    minZoom: 14,
   });
 
   map.on('load', function() {
