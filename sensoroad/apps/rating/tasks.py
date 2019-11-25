@@ -49,6 +49,7 @@ def task_rating_georeverse(rating_data):
     image_path = rating_data['image']
     try:
         rate = cracker(image_path)
+        print(rate)
         point_rate = int(rate)
         if point_rate < 1 or point_rate > 10:
             raise RatingError
