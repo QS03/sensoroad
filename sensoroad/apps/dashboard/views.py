@@ -66,7 +66,6 @@ def dashboard_view(request):
       lines_data.append(res['line_data'])
 
     context = {
-      'user': request.user,
       'city_state_list': city_state_list,
       'sel_city_state': sel_city_state,
       'points_data': json.dumps(points_data),
@@ -89,8 +88,6 @@ def dashboard_view(request):
     city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
     city = request.user.city
     state = request.user.state
-    print(city)
-    print(state)
     if city == '' or state == '':
       if len(city_state_list) > 0:
         sel_city_state = city_state_list[0]
@@ -98,9 +95,9 @@ def dashboard_view(request):
         sel_city_state = {'city': city, 'state': state}
     else:
       sel_city_state = {'city': city, 'state': state}
+      city_state_list.append({'city': city, 'state': state})
 
     context = {
-      'user': request.user,
       'city_state_list': city_state_list,
       'sel_city_state': sel_city_state,
       'points_data': json.dumps(points_data),
@@ -131,13 +128,12 @@ def city_view(request, city, state):
     city_state_list.append({'city': point.city, 'state': point.state})
 
   city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
-  if city == '' or state == '' or city:
-    sel_city_state = city_state_list[0]
-  else:
-    sel_city_state = {'city': city, 'state': state}
+
+  sel_city_state = {'city': city, 'state': state}
+  if request.user.city != '' and request.user.state != '':
+    city_state_list.append({'city': request.user.city, 'state': request.user.state})
 
   context = {
-    'user': request.user,
     'city_state_list': city_state_list,
     'sel_city_state': sel_city_state,
     'points_data': json.dumps(points_data),

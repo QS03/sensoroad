@@ -771,21 +771,32 @@
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="sidebarCollapse">
           <!-- Divider -->
-          <hr class="my-3">
+            <hr class="my-3">
 
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false" style="width: 100%;">
-              {{ sel_city_state.city }}, {{ sel_city_state.state }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 100%;">
-              {% for city_state_item in city_state_list %}
-                <li>
-                  <a class="dropdown-item" href='/map/{{ city_state_item.city }}/{{ city_state_item.state }}'>{{ city_state_item.city }}, {{ city_state_item.state }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
+            <div class="dropdown">
+
+              {% if city_state_list %}
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false" style="width: 100%;">
+                  {{ sel_city_state.city }}, {{ sel_city_state.state }}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 100%;">
+                  {% for city_state_item in city_state_list %}
+                    <li>
+                      <a class="dropdown-item" href='/map/{{ city_state_item.city }}/{{ city_state_item.state }}'>{{ city_state_item.city }}, {{ city_state_item.state }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% elif  sel_city_state %}
+                <div class="alert alert-primary" role="alert">
+                    {{ sel_city_state.city }}, {{ sel_city_state.state }}
+                </div>
+              {% else %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    No city found!
+                </div>
+              {% endif %}
+            </div>
 
           <hr class="my-3">
 
@@ -876,7 +887,7 @@
             </div>
           </div>
 
-          <a href="accounts/logout" class="btn btn-white">
+          <a href="{% url 'logout' %}" class="btn btn-white">
             Log out
           </a>
 
@@ -936,7 +947,6 @@
       selectedCityState = '{{ sel_city_state.city }}, {{ sel_city_state.state }}';
       pointsData = JSON.parse('{{ points_data | escapejs }}');
       linesData = JSON.parse('{{ lines_data | escapejs }}');
-
       mapboxToken = '{{ mapbox_access_token }}';
     </script>
     <!-- mapbox -->

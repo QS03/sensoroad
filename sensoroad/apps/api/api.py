@@ -33,6 +33,18 @@ def upload_image(request):
             status=code,
         )
 
+    if request.user.member_type != 'mobile':
+        status = 'failed'
+        message = 'User not allowed'
+        code = HTTPStatus.FORBIDDEN  # 403
+        return JsonResponse(
+            {
+                'meta': {'status': status},
+                'message': message
+            },
+            status=code,
+        )
+
     try:
         body = request.POST
         road = Road()
