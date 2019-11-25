@@ -3,6 +3,15 @@ mapboxgl.accessToken = mapboxToken;
 var pointsData = pointsData;
 var linesData = linesData;
 
+linesData = [
+  {"coordinates":[[-94.574257,39.068776],[-94.574257,39.068776]],"rate":5},
+  {"coordinates":[[-94.566779,39.068563],[-94.574257,39.068776]],"rate":4},
+  {"coordinates":[[-94.559686,39.068402],[-94.566779,39.068563]],"rate":7},
+  {"coordinates":[[-94.560659,39.073765],[-94.559686,39.068402]],"rate":1},
+  {"coordinates":[[-94.560633,39.073788],[-94.560659,39.073765]],"rate":8},
+  {"coordinates":[[-94.560687,39.073799],[-94.560633,39.073788]],"rate":4}
+
+ ];
 var colorRate = {
   1: '#880015', 2: '#ed1c24', 3: '#ffaec9', 4: '#ffc90e', 5: '#fff200',
   6: '#efe4b0', 7: '#d7f187', 8: '#b4e61e', 9: '#22b14c', 10: '#0e471f'
@@ -10,8 +19,6 @@ var colorRate = {
 
 var city = selectedCityState.split(',')[0];
 var state = selectedCityState.split(',')[1];
-
-console.log('city =', city, 'state =', state);
 
 var query = "https://api.mapbox.com/geocoding/v5/mapbox.places/"+city+".json?access_token="+mapboxgl.accessToken;
 
@@ -89,15 +96,18 @@ $.ajax({
       }
     });
 
-    var mapLinesData = {};
+    var mapLinesData = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[]};
     for(i = 0; i < linesData.length; i++)
-      mapLinesData[linesData[i].rate] = linesData[i].coordinates;
-
+      mapLinesData[linesData[i].rate].push(linesData[i].coordinates);
     for(i = 1; i <= 10; i++)
     {
-        if (typeof mapLinesData[i] !== 'undefined')
-            updateRoute(mapLinesData[i], colorRate[i], 'line'+i.toString());
+      if (mapLinesData[i.toString()].length > 0)
+      {
+        for(j = 0; j < mapLinesData[i.toString()].length; j++ )
+         updateRoute(mapLinesData[i.toString()][j], colorRate[i], i.toString());
+      }
     }
+
   });
 
   var popup = new mapboxgl.Popup;
@@ -131,10 +141,11 @@ $.ajax({
   });
 });
 
+var layerSegCnt = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0};
 // Draw the Map Matching route as a new layer on the map
 function addRoute(coords, lineColor, layerID) {
   map.addLayer({
-    "id": layerID,
+    "id": 'line' + layerID.toString() + layerSegCnt[layerID].toString(),
     "type": "line",
     "source": {
       "type": "geojson",
@@ -155,6 +166,7 @@ function addRoute(coords, lineColor, layerID) {
       "line-opacity": 0.8
     }
   });
+  layerSegCnt[layerID] += 1;
 }
 
 function updateRoute(coords, lineColor, layerID) {
@@ -175,17 +187,19 @@ function getMatch(coordinates, radius, profile, lineColor, layerID) {
   // Separate the radiuses with semicolons
   var radiuses = radius.join(';');
   // Create the query
+
+
   var query = 'https://api.mapbox.com/matching/v5/mapbox/'+profile+'/'+coordinates+'?geometries=geojson&radiuses='+radiuses+'&steps=true&access_token='+mapboxgl.accessToken;
 
   $.ajax({
     method: 'GET',
-    url: query
+    url: query,
+    async: false
   }).done(function(data) {
     if(data.matchings.length > 0){
       // Get the coordinates from the response
       var coords = data.matchings[0].geometry;
-      // Draw the route on the map
-      addRoute(coords, lineColor, layerID);
+      addRoute(coords, lineColor, layerID.toString());
     }
   });
 }
@@ -200,52 +214,15 @@ $('#layer1').click(function (data) {
     $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===1?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line1'))
-      map.setLayoutProperty('line1', 'visibility', 'visible');
-  }
-});
-
-$('#layer1').click(function (data) {
-  if (viewMode === 'line') {
-    for(var i = 1; i <= 10; i++)
-      $('#layer'+i.toString()).css({"border": "none"});
-    $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
-    for (var j = 1; j <= 10; j++)
-    {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
-    }
-    if(map.getLayer('points'))
-      map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line1'))
-      map.setLayoutProperty('line1', 'visibility', 'visible');
-  }
-});
-
-$('#layer1').click(function (data) {
-  if (viewMode === 'line') {
-    for(var i = 1; i <= 10; i++)
-      $('#layer'+i.toString()).css({"border": "none"});
-    $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
-    for (var j = 1; j <= 10; j++)
-    {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
-    }
-    if(map.getLayer('points'))
-      map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line1'))
-      map.setLayoutProperty('line1', 'visibility', 'visible');
   }
 });
 
@@ -254,17 +231,18 @@ $('#layer2').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[2], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===2?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line2'))
-      map.setLayoutProperty('line2', 'visibility', 'visible');
   }
 });
 
@@ -273,17 +251,18 @@ $('#layer3').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[3], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===3?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line3'))
-      map.setLayoutProperty('line3', 'visibility', 'visible');
   }
 });
 
@@ -292,17 +271,18 @@ $('#layer4').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[4], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===4?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line4'))
-      map.setLayoutProperty('line4', 'visibility', 'visible');
   }
 });
 
@@ -311,17 +291,18 @@ $('#layer5').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[5], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===5?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line5'))
-      map.setLayoutProperty('line5', 'visibility', 'visible');
   }
 });
 
@@ -330,17 +311,18 @@ $('#layer6').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[6], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===6?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line6'))
-      map.setLayoutProperty('line6', 'visibility', 'visible');
   }
 });
 
@@ -349,17 +331,18 @@ $('#layer7').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[7], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===7?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line7'))
-      map.setLayoutProperty('line7', 'visibility', 'visible');
   }
 });
 
@@ -368,17 +351,18 @@ $('#layer8').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[8], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===8?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line8'))
-      map.setLayoutProperty('line8', 'visibility', 'visible');
   }
 });
 
@@ -387,17 +371,18 @@ $('#layer9').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[9], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===9?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line9'))
-      map.setLayoutProperty('line9', 'visibility', 'visible');
   }
 });
 
@@ -406,17 +391,18 @@ $('#layer10').click(function (data) {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
     $('#layerAll').css({"border": "none"});
-    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
+    $(this).css({"border": "1px solid "+colorRate[10], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
     {
-      var layerID = 'line'+j.toString();
-      if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'none');
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', j===10?'visible':'none');
+      }
     }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
-    if(map.getLayer('line10'))
-      map.setLayoutProperty('line10', 'visibility', 'visible');
   }
 });
 
@@ -424,11 +410,17 @@ $('#layerAll').click(function (data) {
   if (viewMode === 'line') {
     for(var i = 1; i <= 10; i++)
       $('#layer'+i.toString()).css({"border": "none"});
-    $(this).css({"border": "1px solid black", "border-radius": "20px"});
-
+    $('#layerAll').css({"border": "none"});
+    $(this).css({"border": "1px solid "+colorRate[1], "border-radius": "20px"});
     for (var j = 1; j <= 10; j++)
-      if(map.getLayer('line'+j.toString()))
-        map.setLayoutProperty('line'+j.toString(), 'visibility', 'visible');
+    {
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', 'visible');
+      }
+    }
     if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', 'none');
   }
@@ -439,14 +431,19 @@ $('#toggleMode').click(function (data) {
       $('#layer'+i.toString()).css({"border": "none"});
   var atLeastOneIsChecked = $('input[id="toggleMode"]:checked').length > 0;
   viewMode = atLeastOneIsChecked ? 'line' : 'point';
+
+
   if(map.getLayer('points'))
       map.setLayoutProperty('points', 'visibility', atLeastOneIsChecked ? 'none' : 'visible');
-  for (var i = 1; i <= 10; i++)
-  {
-    var layerID = 'line'+i.toString();
-    if(map.getLayer(layerID))
-        map.setLayoutProperty('line'+i.toString(), 'visibility', atLeastOneIsChecked ? 'visible' : 'none');
-  }
+   for (var j = 1; j <= 10; j++)
+    {
+      for(var k = 0; k <= layerSegCnt[j.toString()]; k++)
+      {
+        layerID = 'line'+j.toString()+k.toString();
+        if(map.getLayer(layerID))
+          map.setLayoutProperty(layerID, 'visibility', atLeastOneIsChecked ? 'visible' : 'none');
+      }
+    }
 });
 
 

@@ -44,7 +44,7 @@ class Road(models.Model):
         image_path = settings.MEDIA_URL + self.image.path.split(settings.MEDIA_URL)[1]
 
         if self.point_rate is None:
-            point_rate = 0
+            point_rate = 1
         else:
             point_rate = int(self.point_rate)
 
