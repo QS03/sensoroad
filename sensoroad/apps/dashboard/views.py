@@ -78,7 +78,7 @@ def dashboard_view(request):
     points_data = []
     lines_data = []
     city_state_list = []
-    points = Road.objects.exclude(city='').exclude(state='')
+    points = Road.objects.exclude(city=None).exclude(state=None)
     for point in points:
       res = point.get_object_for_dashboard()
       points_data.append(res['point_data'])
@@ -88,13 +88,13 @@ def dashboard_view(request):
     city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
     city = request.user.city
     state = request.user.state
-    if city == '' or state == '':
+    if city is None or state is None:
       if len(city_state_list) > 0:
         sel_city_state = city_state_list[0]
       else:
-        sel_city_state = {'city': city, 'state': state}
+        sel_city_state = None
     else:
-      sel_city_state = None
+      sel_city_state = {'city': city, 'state': state}
 
     context = {
       'city_state_list': city_state_list,
@@ -122,7 +122,7 @@ def city_view(request, city, state):
     lines_data.append(res['line_data'])
 
   city_state_list = []
-  points = Road.objects.exclude(city='').exclude(state='')
+  points = Road.objects.exclude(city=None).exclude(state=None)
 
   for point in points:
     city_state_list.append({'city': point.city, 'state': point.state})
@@ -130,7 +130,7 @@ def city_view(request, city, state):
   city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
 
   sel_city_state = {'city': city, 'state': state}
-  if request.user.city != '' and request.user.state != '':
+  if request.user.city is not None and request.user.state is not None:
     city_state_list.append({'city': request.user.city, 'state': request.user.state})
 
   context = {

@@ -31,28 +31,33 @@ def task_rating_georeverse(rating_data):
         try:
             street = geo_data[0]['text']
             context = geo_data[0]['context']
-            city = context[1]['text']
-            state = context[2]['text']
+            for item in context:
+                if 'place.' in item['id']:
+                    city = item['text']
+                if 'region.' in item['id']:
+                    state = item['text']
+
+            if city is None or state is None:
+                raise MapboxError
         except IndexError:
             raise MapboxError
     except MapboxError:
+        print('mapbox matching error')
         road.delete()
         return
 
     image_path = rating_data['image']
-    print("image path:{}".format(image_path))
     try:
         rate = cracker(image_path)
         point_rate = int(rate)
         if point_rate < 1 or point_rate > 10:
             raise RatingError
-    except RatingError:
-        road.delete()
-        return
     except:
+        print('rating error')
         road.delete()
         return
 
+    print("image path:{}, rate:{}".format(image_path, point_rate))
     if rating_data['previous_id'] == uuid.UUID('00000000-0000-0000-0000-000000000000').hex:
         previous_rate = point_rate
     else:
