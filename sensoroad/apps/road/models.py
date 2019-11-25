@@ -96,3 +96,24 @@ class Road(models.Model):
         }
         return data
 
+    @staticmethod
+    def get_all_objects():
+        roads = Road.objects.all()
+        road_data = []
+        for road in roads:
+            road_data.append(
+                {
+                    'id': road.id,
+                    'previous_id': road.previous_id,
+                    'image': road.image.path,
+                    'latitude': road.latitude,
+                    'longitude': road.longitude,
+                    'point_rate': road.point_rate,
+                    'line_rate': road.line_rate,
+                    'city': road.city,
+                    'state': road.state
+                }
+            )
+
+        return road_data
+
