@@ -94,8 +94,7 @@ def dashboard_view(request):
       else:
         sel_city_state = {'city': city, 'state': state}
     else:
-      sel_city_state = {'city': city, 'state': state}
-      city_state_list.append({'city': city, 'state': state})
+      sel_city_state = None
 
     context = {
       'city_state_list': city_state_list,
@@ -124,6 +123,7 @@ def city_view(request, city, state):
 
   city_state_list = []
   points = Road.objects.exclude(city='').exclude(state='')
+
   for point in points:
     city_state_list.append({'city': point.city, 'state': point.state})
 
