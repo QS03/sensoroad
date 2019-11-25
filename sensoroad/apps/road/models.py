@@ -101,8 +101,7 @@ class Road(models.Model):
         roads = Road.objects.all()
         road_data = []
         for road in roads:
-            road_data.append(
-                {
+            road_data.append({
                     'id': road.id,
                     'previous_id': road.previous_id,
                     'image': road.image.path,

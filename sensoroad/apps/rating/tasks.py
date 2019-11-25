@@ -42,42 +42,27 @@ def task_rating_georeverse(rating_data):
         except IndexError:
             raise MapboxError
     except MapboxError:
-        print('mapbox matching error')
-        road.delete()
-        return
+        street = None
+        city = None
+        state = None
+
     print('{}, {}'.format(city, state))
 
     image_path = rating_data['image']
     try:
         rate = cracker(image_path)
-        print(rate)
         point_rate = int(rate)
-        if point_rate < 1 or point_rate > 10:
-            raise RatingError
+        if point_rate < 1:
+            point_rate = 1
+
+        if point_rate > 10:
+            point_rate = 10
     except:
-        print('rating error')
-        road.delete()
-        return
+        point_rate = None
 
     print("image path:{}, rate:{}".format(image_path, point_rate))
-    if rating_data['previous_id'] == uuid.UUID('00000000-0000-0000-0000-000000000000').hex:
-        previous_rate = point_rate
-    else:
-        try:
-            previous_road = Road.objects.get(pk=rating_data['previous_id'])
-            if previous_road.point_rate is not None:
-                previous_rate = int(previous_road.point_rate)
-            else:
-                previous_rate = point_rate
-        except Road.DoesNotExist:
-            previous_rate = point_rate
-
-    line_rate = point_rate
-    if previous_rate != 0:
-        line_rate = (previous_rate + point_rate) / 2
 
     road.point_rate = point_rate
-    road.line_rate = line_rate
     road.city = city
     road.state = state
     road.street = street
