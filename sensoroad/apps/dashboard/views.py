@@ -89,8 +89,13 @@ def dashboard_view(request):
     city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
     city = request.user.city
     state = request.user.state
-    if city == '' or state == '' or city is None or state is None:
-      sel_city_state = city_state_list[0]
+    print(city)
+    print(state)
+    if city == '' or state == '':
+      if len(city_state_list) > 0:
+        sel_city_state = city_state_list[0]
+      else:
+        sel_city_state = {'city': city, 'state': state}
     else:
       sel_city_state = {'city': city, 'state': state}
 
@@ -126,7 +131,7 @@ def city_view(request, city, state):
     city_state_list.append({'city': point.city, 'state': point.state})
 
   city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
-  if city == '' or state == '' or city is None or state is None:
+  if city == '' or state == '' or city:
     sel_city_state = city_state_list[0]
   else:
     sel_city_state = {'city': city, 'state': state}
