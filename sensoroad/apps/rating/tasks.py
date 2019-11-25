@@ -45,6 +45,7 @@ def task_rating_georeverse(rating_data):
         print('mapbox matching error')
         road.delete()
         return
+    print('{}, {}'.format(city, state))
 
     image_path = rating_data['image']
     try:
