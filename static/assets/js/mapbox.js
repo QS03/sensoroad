@@ -3,15 +3,6 @@ mapboxgl.accessToken = mapboxToken;
 var pointsData = pointsData;
 var linesData = linesData;
 
-linesData = [
-  {"coordinates":[[-94.574257,39.068776],[-94.574257,39.068776]],"rate":5},
-  {"coordinates":[[-94.566779,39.068563],[-94.574257,39.068776]],"rate":4},
-  {"coordinates":[[-94.559686,39.068402],[-94.566779,39.068563]],"rate":7},
-  {"coordinates":[[-94.560659,39.073765],[-94.559686,39.068402]],"rate":1},
-  {"coordinates":[[-94.560633,39.073788],[-94.560659,39.073765]],"rate":8},
-  {"coordinates":[[-94.560687,39.073799],[-94.560633,39.073788]],"rate":4}
-
- ];
 var colorRate = {
   1: '#880015', 2: '#ed1c24', 3: '#ffaec9', 4: '#ffc90e', 5: '#fff200',
   6: '#efe4b0', 7: '#d7f187', 8: '#b4e61e', 9: '#22b14c', 10: '#0e471f'
