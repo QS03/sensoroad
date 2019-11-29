@@ -1,68 +1,39 @@
-from tensorflow import keras
-import cv2
-import numpy as np
-import pandas as pd
-from PIL import Image
-import imutils
-from openpyxl import Workbook
 import os, os.path
-import re
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout, Activation
-from keras.utils import to_categorical
-from tensorflow.keras.callbacks import ModelCheckpoint
 
 TRAINED_MODEL_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "trained_model.h5")
 
 
-# Function for displaying an image
-def show(show_img):
-    cv2.imshow("Image", show_img)
-    cv2.waitKey(0)
-
-
-def get_crdnt(image):
-    r = cv2.selectROI("Image", image)
-    (x, y, w, h) = r
-    # Crop image
-    imCrop = image[int(r[1]):int(r[1] + r[3]), int(r[0]):int(r[0] + r[2])]
-    # Display cropped image
-    show(imCrop)
-    print("x", x, "y", y, "w", w, "h", h)
-
-
-# Function for cropping an image based on x,y,w,h values
-def crop_road(x, y, w, h, image_full):
-    r = (x, y, w, h)
-    imCrop = image_full[int(r[1]):int(r[1] + r[3]), int(r[0]):int(r[0] + r[2])]
-    return imCrop
-
-
-# Function for reading an image from folder and then cropping an image
-def get_image(image_path):
-    image = cv2.imread(image_path)
-    image = cv2.resize(image, (960, 540))
-    cropped = crop_road(4, 122, 956, 244, image)
-    return cropped
-
-
 def cracker(image_path):
+    from tensorflow import keras
+    import cv2
+    import numpy as np
+    import pandas as pd
+    from PIL import Image
+    import imutils
+    from openpyxl import Workbook
+
+    import re
+    import tensorflow as tf
+    from tensorflow.keras.preprocessing.image import ImageDataGenerator
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout, Activation
+    from keras.utils import to_categorical
+    from tensorflow.keras.callbacks import ModelCheckpoint
+
     # Create a pandas dataframe for 244x956 = 233265 pixels
     col = [x for x in range(233264)]
 
     road_pixels = pd.DataFrame(columns=col)
 
     z = 0
-    road = get_image(image_path)
-    img = road
-    #         show(img)
+    image = cv2.imread(image_path)
+    image = cv2.resize(image, (960, 540))
+    r = (4, 122, 956, 244)
+    img = image[int(r[1]):int(r[1] + r[3]), int(r[0]):int(r[0] + r[2])]
 
     # convert BGR to HSV
     imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    #         show(imgHSV)
     # get mean and standard deviation of pixel colour values
     means, stddevs = cv2.meanStdDev(imgHSV)
 
@@ -96,12 +67,6 @@ def cracker(image_path):
         # creating convex hull object for each contour
         hull.append(cv2.convexHull(conts[i], False))
 
-    # draw contours and hull points
-    # for i in range(len(conts)):
-    #     #cv2.drawContours(img,conts,-1,(0,0,255),3)
-    #     # draw ith convex hull object
-    #     cv2.drawContours(img, hull, i, (0,0,255), 1, 8)
-
     # create matrix with a shape of img.shape
     stencil = np.zeros(img.shape).astype(img.dtype)
 
@@ -110,7 +75,6 @@ def cracker(image_path):
     cv2.fillPoly(stencil, hull, color)
     result = cv2.bitwise_and(img, stencil)
 
-    #         show(result)
     # convert the processed image into Grayscale
     resultGray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
     block_size = 293
@@ -120,7 +84,6 @@ def cracker(image_path):
                                 constant)
     th2 = cv2.adaptiveThreshold(resultGray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, block_size,
                                 constant)
-    #         show(th2)
 
     # convert the numpy array of image pixel data to list
     row = th2.ravel()
