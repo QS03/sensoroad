@@ -70,7 +70,7 @@ class Road(models.Model):
         line_data = {
             'coordinates': [
                 [self.longitude, self.latitude],
-                [self.longitude, self.latitude],
+                [self.prev_longitude, self.prev_latitude],
             ],
             'rate': line_rate,
             'matching': self.matching,
@@ -128,35 +128,35 @@ class Road(models.Model):
                 prev_latitude = prev_road.latitude
                 prev_point_rate = prev_road.point_rate
 
-                if prev_latitude is None or prev_longitude is None:
-                    raise Exception
-
                 line = {
-                    'type' : 'Feature',
+                    'type': 'Feature',
                     'properties': {},
                     'geometry': {
                         'type': 'LineString',
                         'coordinates': [
-                            [longitude, latitude],
-                            [prev_longitude, prev_latitude]
+                            [prev_longitude, prev_latitude],
+                            [longitude, latitude]
                         ]
                     }
                 }
                 response = service.match(line, profile='mapbox.driving')
-                if response.status_code == 200:
+                if response.geojson()['code'] == 'Ok':
                     road.matching = response.geojson()['features'][0]
-                    road.prev_longitude = prev_road.longitude
-                    road.prev_latitude = prev_road.latitude
-
-                    if point_rate is not None and prev_point_rate is not None:
-                        road.line_rate = int((int(point_rate) + int(prev_point_rate)) / 2)
-                    elif point_rate is not None:
-                        road.line_rate = int(point_rate)
-                    elif prev_point_rate is not None:
-                        road.line_rate = int(prev_point_rate)
                 else:
-                    raise Exception
-            except:
+                    road.matching = {'type': 'Feature', 'geometry': {'coordinates': [
+                        [longitude, latitude], [prev_road.longitude, prev_road.latitude]
+                    ], 'type': 'LineString'}}
+
+                road.prev_longitude = prev_road.longitude
+                road.prev_latitude = prev_road.latitude
+                if point_rate is not None and prev_point_rate is not None:
+                    road.line_rate = int((int(point_rate) + int(prev_point_rate)) / 2)
+                elif point_rate is not None:
+                    road.line_rate = int(point_rate)
+                elif prev_point_rate is not None:
+                    road.line_rate = int(prev_point_rate)
+
+            except Road.DoesNotExist:
                 road.matching = {'type': 'Feature', 'geometry': {'coordinates': [
                     [longitude, latitude], [longitude, latitude]
                 ], 'type': 'LineString'}}
