@@ -155,19 +155,22 @@ class Road(models.Model):
                     else:
                         road.matching = json.dumps({'coordinates': [
                             [longitude, latitude],
-                            [prev_longitude, prev_latitude]]
+                            [prev_longitude, prev_latitude]],
+                            'type': 'LineString'
                         })
                 else:
                     road.matching = json.dumps({'coordinates': [
                         [longitude, latitude],
-                        [prev_longitude, prev_latitude]]
+                        [prev_longitude, prev_latitude]],
+                            'type': 'LineString'
                     })
             except Road.DoesNotExist:
                 road.prev_latitude = longitude
                 road.prev_longitude = latitude
                 road.matching = json.dumps({'coordinates': [
                     [longitude, latitude],
-                    [longitude, latitude]]
+                    [longitude, latitude]],
+                    'type': 'LineString'
                 })
 
             print(road.matching)

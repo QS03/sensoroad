@@ -112,7 +112,8 @@ $.ajax({
     for(i = 0; i < linesData.length; i++)
     {
       matching = JSON.parse(linesData[i].matching.replace(/'/g, '"'));
-      addRoute(matching.geometry, linesData[i].rate);
+      console.log(matching);
+      addRoute(matching, linesData[i].rate);
     }
   });
 
