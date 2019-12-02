@@ -1,8 +1,8 @@
 import uuid
+import json
+import requests
 from django.db import models
 from django.conf import settings
-from mapbox import MapMatcher
-
 # Create your models here.
 
 
@@ -116,7 +116,14 @@ class Road(models.Model):
     def fill_matching_data():
         roads = Road.objects.all()
 
-        service = MapMatcher(access_token=settings.MAPBOX_ACCESS_TOKEN)
+        url_prefix = 'https://api.mapbox.com/matching/v5/mapbox/driving'
+        params = {
+            'geometries': 'geojson',
+            'radiuses': '25;25',
+            'steps': 'true',
+            'access_token': settings.MAPBOX_ACCESS_TOKEN
+            }
+
         for road in roads:
             longitude = road.longitude
             latitude = road.latitude
@@ -128,42 +135,41 @@ class Road(models.Model):
                 prev_latitude = prev_road.latitude
                 prev_point_rate = prev_road.point_rate
 
-                line = {
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                        'type': 'LineString',
-                        'coordinates': [
-                            [prev_longitude, prev_latitude],
-                            [longitude, latitude]
-                        ]
-                    }
-                }
-                response = service.match(line, profile='mapbox.driving')
-                if response.geojson()['code'] == 'Ok':
-                    road.matching = response.geojson()['features'][0]
-                else:
-                    road.matching = {'type': 'Feature', 'geometry': {'coordinates': [
-                        [longitude, latitude], [prev_road.longitude, prev_road.latitude]
-                    ], 'type': 'LineString'}}
-
-                road.prev_longitude = prev_road.longitude
-                road.prev_latitude = prev_road.latitude
+                road.prev_latitude = prev_latitude
+                road.prev_longitude = prev_longitude
                 if point_rate is not None and prev_point_rate is not None:
-                    road.line_rate = int((int(point_rate) + int(prev_point_rate)) / 2)
+                    road.line_rate = int((int(point_rate) + int(prev_point_rate))/2)
                 elif point_rate is not None:
-                    road.line_rate = int(point_rate)
+                    road.line_rate = point_rate
                 elif prev_point_rate is not None:
-                    road.line_rate = int(prev_point_rate)
+                    road.line_rate = prev_point_rate
 
+                coordinates = "{},{};{},{}".format(prev_longitude, prev_latitude, longitude, latitude)
+                url = '{}/{}'.format(url_prefix, coordinates)
+
+                response = requests.get(url=url, params=params)
+                if response.status_code == 200:
+                    data = response.json()
+                    if data['code'] == 'Ok':
+                        road.matching = json.dumps(data['matchings'][0]['geometry'])
+                    else:
+                        road.matching = json.dumps({'coordinates': [
+                            [longitude, latitude],
+                            [prev_longitude, prev_latitude]]
+                        })
+                else:
+                    road.matching = json.dumps({'coordinates': [
+                        [longitude, latitude],
+                        [prev_longitude, prev_latitude]]
+                    })
             except Road.DoesNotExist:
-                road.matching = {'type': 'Feature', 'geometry': {'coordinates': [
-                    [longitude, latitude], [longitude, latitude]
-                ], 'type': 'LineString'}}
-                road.prev_longitude = longitude
-                road.prev_latitude = latitude
-                road.line_rate = point_rate
+                road.prev_latitude = longitude
+                road.prev_longitude = latitude
+                road.matching = json.dumps({'coordinates': [
+                    [longitude, latitude],
+                    [longitude, latitude]]
+                })
 
-            print("matching: {}".format(road.matching))
+            print(road.matching)
             road.save()
 
