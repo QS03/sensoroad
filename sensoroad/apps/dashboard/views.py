@@ -128,10 +128,7 @@ def city_view(request, city, state):
     city_state_list.append({'city': point.city, 'state': point.state})
 
   city_state_list = [dict(t) for t in {tuple(city_state.items()) for city_state in city_state_list}]
-
   sel_city_state = {'city': city, 'state': state}
-  if request.user.city is not None and request.user.state is not None:
-    city_state_list.append({'city': request.user.city, 'state': request.user.state})
 
   context = {
     'city_state_list': city_state_list,
