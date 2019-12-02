@@ -4,6 +4,7 @@ from sensoroad.apps.rating.cracker import cracker
 from django.conf import settings
 
 from mapbox import Geocoder
+from mapbox import MapMatcher
 
 from sensoroad.apps.road.models import Road
 

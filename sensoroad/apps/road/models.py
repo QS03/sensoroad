@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from mapbox import MapMatcher
+
 # Create your models here.
 
 
@@ -10,11 +12,17 @@ class Road(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='image/', blank=False)
+    taken_at = models.DateTimeField(blank=True, null=True)
+
     longitude = models.FloatField(blank=False)
     latitude = models.FloatField(blank=False)
-    taken_at = models.DateTimeField(blank=True, null=True)
     point_rate = models.IntegerField(blank=True, null=True)
+
+    prev_longitude = models.FloatField(blank=True, null=True)
+    prev_latitude = models.FloatField(blank=True, null=True)
     line_rate = models.IntegerField(blank=True, null=True)
+    matching = models.TextField(blank=True, null=True)
+
     street = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=255, blank=True, null=True)
@@ -48,24 +56,10 @@ class Road(models.Model):
         else:
             point_rate = int(self.point_rate)
 
-        try:
-            previous_road = Road.objects.get(pk=self.previous_id)
-
-            if previous_road.point_rate is None:
-                previous_point_rate = point_rate
-            else:
-                previous_point_rate = int(previous_road.point_rate)
-
-            previous_point = {
-                'longitude': previous_road.longitude,
-                'latitude': previous_road.latitude,
-            }
-        except Road.DoesNotExist:
-            previous_point = {
-                'longitude': self.longitude,
-                'latitude': self.latitude,
-            }
-            previous_point_rate = point_rate
+        if self.line_rate is None:
+            line_rate = 1
+        else:
+            line_rate = int(self.line_rate)
 
         point_data = {
              'coordinate': [self.longitude, self.latitude],
@@ -76,9 +70,10 @@ class Road(models.Model):
         line_data = {
             'coordinates': [
                 [self.longitude, self.latitude],
-                [previous_point['longitude'], previous_point['latitude']],
+                [self.longitude, self.latitude],
             ],
-            'rate': int((point_rate + previous_point_rate)/2)
+            'rate': line_rate,
+            'matching': self.matching,
         }
 
         return {
@@ -109,10 +104,66 @@ class Road(models.Model):
                     'longitude': road.longitude,
                     'point_rate': road.point_rate,
                     'line_rate': road.line_rate,
+                    'matching': road.matching,
                     'city': road.city,
                     'state': road.state
                 }
             )
 
         return road_data
+
+    @staticmethod
+    def fill_matching_data():
+        roads = Road.objects.all()
+
+        service = MapMatcher(access_token=settings.MAPBOX_ACCESS_TOKEN)
+        for road in roads:
+            longitude = road.longitude
+            latitude = road.latitude
+            point_rate = road.point_rate
+
+            try:
+                prev_road = Road.objects.get(pk=road.previous_id)
+                prev_longitude = prev_road.longitude
+                prev_latitude = prev_road.latitude
+                prev_point_rate = prev_road.point_rate
+
+                if prev_latitude is None or prev_longitude is None:
+                    raise Exception
+
+                line = {
+                    'type' : 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': [
+                            [longitude, latitude],
+                            [prev_longitude, prev_latitude]
+                        ]
+                    }
+                }
+                response = service.match(line, profile='mapbox.driving')
+                if response.status_code == 200:
+                    road.matching = response.geojson()['features'][0]
+                    road.prev_longitude = prev_road.longitude
+                    road.prev_latitude = prev_road.latitude
+
+                    if point_rate is not None and prev_point_rate is not None:
+                        road.line_rate = int((int(point_rate) + int(prev_point_rate)) / 2)
+                    elif point_rate is not None:
+                        road.line_rate = int(point_rate)
+                    elif prev_point_rate is not None:
+                        road.line_rate = int(prev_point_rate)
+                else:
+                    raise Exception
+            except:
+                road.matching = {'type': 'Feature', 'geometry': {'coordinates': [
+                    [longitude, latitude], [longitude, latitude]
+                ], 'type': 'LineString'}}
+                road.prev_longitude = longitude
+                road.prev_latitude = latitude
+                road.line_rate = point_rate
+
+            print("matching: {}".format(road.matching))
+            road.save()
 

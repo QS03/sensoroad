@@ -1,7 +1,25 @@
 mapboxgl.accessToken = mapboxToken;
 
-var pointsData = pointsData;
-var linesData = linesData;
+//var pointsData = [
+//  {"coordinate":[-94.521963,39.071519],"rate":4,"image_url":"assets/img/test.jpg"},
+//  {"coordinate":[-94.574257,39.068776],"rate":5,"image_url":"assets/img/test.jpg"},
+//  {"coordinate":[-94.566779,39.068563],"rate":4,"image_url":"assets/img/test.jpg"},
+//  {"coordinate":[-94.559686,39.068402],"rate":10,"image_url":"assets/img/test.jpg"},
+//  {"coordinate":[-94.560659,39.073765],"rate":4,"image_url":"assets/img/test.jpg"},
+//  {"coordinate":[-94.563512,39.080578],"rate":4,"image_url":"assets/img/test.jpg"},
+//  {"coordinate":[-94.569889,39.08537],"rate":5,"image_url":"assets/img/test.jpg"}
+//];
+//var linesData = [
+//  {"coordinates":[[-94.521963,39.071519],[-94.53609,39.074396]],"rate":4, "matching": "{'type': 'Feature', 'geometry': {'coordinates': [[-122.483616, 37.832074], [-122.483576, 37.832141], [-122.483406, 37.83245], [-122.483357, 37.832631], [-122.483365, 37.832702]], 'type': 'LineString'}, 'properties': {'confidence': 0.9769701603591643, 'distance': 74.2, 'duration': 11.1, 'matchedPoints': [[-122.483616, 37.832074], [-122.483365, 37.832702]], 'indices': [0, 1]}}"},
+//  // {"coordinates":[[-94.574257,39.068776],[-94.574257,39.068776]],"rate":5},
+//  // {"coordinates":[[-94.566779,39.068563],[-94.574257,39.068776]],"rate":4},
+//  // {"coordinates":[[-94.559686,39.068402],[-94.566779,39.068563]],"rate":7},
+//  // {"coordinates":[[-94.560659,39.073765],[-94.559686,39.068402]],"rate":7},
+//  // {"coordinates":[[-94.563512,39.080578],[-94.560659,39.073765]],"rate":4},
+//  // {"coordinates":[[-94.569889,39.08537],[-94.563512,39.080578]],"rate":4},
+//  // {"coordinates":[[-94.571882,39.093435],[-94.569889,39.08537]],"rate":4},
+//  // {"coordinates":[[-94.572502,39.101514],[-94.571882,39.093435]],"rate":2}
+//];
 
 var colorRate = {
   1: '#880015', 2: '#ed1c24', 3: '#ffaec9', 4: '#ffc90e', 5: '#fff200',
@@ -10,6 +28,9 @@ var colorRate = {
 
 var city = selectedCityState.split(',')[0];
 var state = selectedCityState.split(',')[1];
+
+if(!city)
+  city = 'Kansas City';
 
 var query = "https://api.mapbox.com/geocoding/v5/mapbox.places/"+city+".json?access_token="+mapboxgl.accessToken;
 
@@ -89,16 +110,10 @@ $.ajax({
 
     var mapLinesData = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[]};
     for(i = 0; i < linesData.length; i++)
-      mapLinesData[linesData[i].rate].push(linesData[i].coordinates);
-    for(i = 1; i <= 10; i++)
     {
-      if (mapLinesData[i.toString()].length > 0)
-      {
-        for(j = 0; j < mapLinesData[i.toString()].length; j++ )
-         updateRoute(mapLinesData[i.toString()][j], colorRate[i], i.toString());
-      }
+      matching = JSON.parse(linesData[i].matching.replace(/'/g, '"'));
+      addRoute(matching.geometry, linesData[i].rate);
     }
-
   });
 
   var popup = new mapboxgl.Popup;
@@ -133,17 +148,18 @@ $.ajax({
 });
 
 var layerSegCnt = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0};
+
 // Draw the Map Matching route as a new layer on the map
-function addRoute(coords, lineColor, layerID) {
+function addRoute(geometry, rate) {
   map.addLayer({
-    "id": 'line' + layerID.toString() + layerSegCnt[layerID].toString(),
+    "id": 'line' + rate.toString() + layerSegCnt[rate].toString(),
     "type": "line",
     "source": {
       "type": "geojson",
       "data": {
         "type": "Feature",
         "properties": {},
-        "geometry": coords
+        "geometry": geometry
       }
     },
     "layout": {
@@ -152,48 +168,48 @@ function addRoute(coords, lineColor, layerID) {
       "visibility": "none"
     },
     "paint": {
-      "line-color": lineColor,
+      "line-color": colorRate[rate],
       "line-width": 8,
       "line-opacity": 0.8
     }
   });
-  layerSegCnt[layerID] += 1;
+  layerSegCnt[rate] += 1;
 }
 
-function updateRoute(coords, lineColor, layerID) {
-  // Set the profile
-  var profile = "driving";
-  // Format the coordinates
-  var newCoords = coords.join(';');
-  // Set the radius for each coordinate pair to 25 meters
-  var radius = [];
-  coords.forEach(element => {
-    radius.push(25);
-  });
-  getMatch(newCoords, radius, profile, lineColor, layerID);
-}
+// function updateRoute(coords, lineColor, layerID) {
+//   // Set the profile
+//   var profile = "driving";
+//   // Format the coordinates
+//   var newCoords = coords.join(';');
+//   // Set the radius for each coordinate pair to 25 meters
+//   var radius = [];
+//   coords.forEach(element => {
+//     radius.push(25);
+//   });
+//   getMatch(newCoords, radius, profile, lineColor, layerID);
+// }
 
 // Make a Map Matching request
-function getMatch(coordinates, radius, profile, lineColor, layerID) {
-  // Separate the radiuses with semicolons
-  var radiuses = radius.join(';');
-  // Create the query
 
-
-  var query = 'https://api.mapbox.com/matching/v5/mapbox/'+profile+'/'+coordinates+'?geometries=geojson&radiuses='+radiuses+'&steps=true&access_token='+mapboxgl.accessToken;
-
-  $.ajax({
-    method: 'GET',
-    url: query,
-    async: false
-  }).done(function(data) {
-    if(data.matchings.length > 0){
-      // Get the coordinates from the response
-      var coords = data.matchings[0].geometry;
-      addRoute(coords, lineColor, layerID.toString());
-    }
-  });
-}
+// function getMatch(coordinates, radius, profile, lineColor, layerID) {
+//   // Separate the radiuses with semicolons
+//   var radiuses = radius.join(';');
+//   // Create the query
+//
+//   var query = 'https://api.mapbox.com/matching/v5/mapbox/'+profile+'/'+coordinates+'?geometries=geojson&radiuses='+radiuses+'&steps=true&access_token='+mapboxgl.accessToken;
+//
+//   $.ajax({
+//     method: 'GET',
+//     url: query,
+//     async: false
+//   }).done(function(data) {
+//     if(data.matchings.length > 0){
+//       // Get the coordinates from the response
+//       var coords = data.matchings[0].geometry;
+//       addRoute(coords, lineColor, layerID.toString());
+//     }
+//   });
+// }
 
 var viewMode = 'point'
 
