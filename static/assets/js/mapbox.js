@@ -55,7 +55,7 @@ $.ajax({
     {
       var item = {type: "Feature", geometry: { coordinates: pointsData[i].coordinate, type: "Point"},
         properties: {RATE: pointsData[i].rate, LON: pointsData[i].coordinate[0], LAT: pointsData[i].coordinate[1],
-          IMAGE_URL: pointsData[i].image_url}};
+          IMAGE_URL: pointsData[i].image_url, STREET: pointsData[i].street, DATETIME: pointsData[i].datetime}};
       mapPointsData.push(item);
     }
 
@@ -125,13 +125,19 @@ $.ajax({
     var lon = e.features[0].properties.LON;
     var lat = e.features[0].properties.LAT;
     var rate = e.features[0].properties.RATE;
+    var street = e.features[0].properties.STREET;
+    var datetime = e.features[0].properties.DATETIME;
     var coordinates = new mapboxgl.LngLat(lon, lat);
 
     var image = "<a href='"+e.features[0].properties.IMAGE_URL+"' data-lightbox='image'>"+
       "<img src='"+e.features[0].properties.IMAGE_URL+"' style='width:100%'/></a>";
 
     var rating = '<h3> Rating:'+rate+'</h3>';
-    var position = "<table style='border: solid 1px gray'><tr><th>Langitude</th><td>"+lon+"</td></tr><tr><th>Longitude</th><td>"+lat+"</td></tr></table>";
+    var position = "<table style='border: solid 1px gray'>" +
+                   "<tr><th>Street</th><td>"+street+"</td></tr>" +
+                   "<tr><th>Date/Time</th><td>"+datetime+"</td></tr>" +
+                   "<tr><th>Langitude</th><td>"+lon+"</td></tr>" +
+                   "<tr><th>Longitude</th><td>"+lat+"</td></tr></table>";
 
     content = image+'<hr>'+rating+position;
 

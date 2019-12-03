@@ -3,6 +3,7 @@ import json
 import requests
 from django.db import models
 from django.conf import settings
+from datetime import datetime
 # Create your models here.
 
 
@@ -64,7 +65,9 @@ class Road(models.Model):
         point_data = {
              'coordinate': [self.longitude, self.latitude],
              'rate': point_rate,
-             'image_url': image_path
+             'image_url': image_path,
+            'street': self.street,
+            'datetime': self.taken_at.strftime("%Y-%m-%d %H:%M:%S")
          }
 
         line_data = {
